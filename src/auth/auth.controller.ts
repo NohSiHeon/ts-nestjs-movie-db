@@ -4,6 +4,7 @@ import { SignUpDto } from './dtos/sign-up.dto';
 import { SignUpSuccessResponseDto } from './dtos/sign-up-success-response.dto';
 import { SignUpFailResponseDto } from './dtos/sign-up-fail-response.dto';
 import { SignInDto } from './dtos/sign-in.dto';
+import { SignInSuccessResponseDto } from './dtos/sign-in-success-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +24,9 @@ export class AuthController {
   }
 
   @Post('/sign-in')
-  async signIn(@Body() signInDto: SignInDto) {
+  async signIn(
+    @Body() signInDto: SignInDto,
+  ): Promise<SignInSuccessResponseDto> {
     const data = await this.authService.signIn(signInDto);
 
     return {
