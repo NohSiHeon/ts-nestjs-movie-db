@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { PrismaService } from 'src/prisma.service';
 import { AuthRepository } from './auth.repository';
-import { UsersRepository } from 'src/users/users.repository';
+import { UsersModule } from 'src/users/users.module';
+import { JwtModule } from '@nestjs/jwt';
+import { RedisModule } from 'src/redis/redis.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
+  imports: [PrismaModule, UsersModule, JwtModule.register({}), RedisModule],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository, UsersRepository, PrismaService],
+  providers: [AuthService, AuthRepository],
 })
 export class AuthModule {}
