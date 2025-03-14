@@ -21,4 +21,23 @@ export class UsersRepository {
 
     return userEmail;
   }
+
+  async findUserByIdAndEmail(
+    id: number,
+    email: string,
+  ): Promise<Omit<User, 'password'>> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+        email,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+      },
+    });
+
+    return user;
+  }
 }

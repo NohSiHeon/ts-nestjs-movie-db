@@ -7,10 +7,14 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { ACCESS_TOKEN_SECRET_KEY } from 'src/constants/env.constants';
+import { UsersRepository } from 'src/users/users.repository';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private usersRepository: UsersRepository,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -23,8 +27,15 @@ export class AuthenticationGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: ACCESS_TOKEN_SECRET_KEY,
       });
+      const user = await this.usersRepository.findUserByIdAndEmail(
+        payload.id,
+        payload.email,
+      );
+      if (!user) {
+        throw new UnauthorizedException();
+      }
 
-      request['user'] = payload;
+      request['user'] = user;
     } catch (error) {
       throw new UnauthorizedException();
     }
