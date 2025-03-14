@@ -1,14 +1,14 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from '@prisma/client';
+import { AuthenticationGuard } from 'src/auth/guards/authentication.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @Get()
-  // async findUserByEmail(@Body() email: string): Promise<User> {
-  //   const data = await this.usersService.findUserByEmail(email);
-  //   return data;
-  // }
+  @UseGuards(AuthenticationGuard)
+  @Get('profile')
+  async getProfile(@Request() req) {
+    return req.user;
+  }
 }
