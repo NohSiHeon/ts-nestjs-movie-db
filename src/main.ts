@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './apps/app.module';
 import 'dotenv/config';
 import { IndexModule } from 'src';
 import { ValidationPipe } from '@nestjs/common';

@@ -4,14 +4,15 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { ACCESS_TOKEN_SECRET_KEY } from 'src/constants/env.constants';
 import { UsersRepository } from 'src/users/users.repository';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   constructor(
+    private configService: ConfigService,
     private jwtService: JwtService,
     private usersRepository: UsersRepository,
   ) {}
@@ -25,7 +26,7 @@ export class AuthenticationGuard implements CanActivate {
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: ACCESS_TOKEN_SECRET_KEY,
+        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET_KEY'),
       });
       const user = await this.usersRepository.findUserByIdAndEmail(
         payload.id,
