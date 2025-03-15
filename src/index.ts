@@ -5,9 +5,17 @@ import { AuthModule } from './auth/auth.module';
 import { MoviesModule } from './movies/movies.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [AppModule, UsersModule, AuthModule, MoviesModule, PrismaModule],
+  imports: [
+    AppModule,
+    UsersModule,
+    AuthModule,
+    MoviesModule,
+    PrismaModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+  ],
   controllers: [],
   providers: [PrismaService],
 })

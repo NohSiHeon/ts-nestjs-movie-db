@@ -13,10 +13,12 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/interfaces/user-email.interface';
 import { SignIn } from './interfaces/sign-in.interface';
 import { RedisService } from 'src/redis/redis.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private configService: ConfigService,
     private readonly authRepository: AuthRepository,
     private readonly usersRepository: UsersRepository,
     private redisService: RedisService,
@@ -37,7 +39,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(
       password,
-      +process.env.HASH_ROUNDS,
+      this.configService.get<string>('HASH_ROUNDS'),
     );
     const data = await this.authRepository.signUp(name, email, hashedPassword);
 
@@ -69,7 +71,7 @@ export class AuthService {
     const payload = { id: user.id, email: user.email };
     // 엑세스 토큰 생성
     const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.ACCESS_TOKEN_SECRET_KEY,
+      secret: this.configService.get<string>('ACCESS_TOKEN_SECRET_KEY'),
       expiresIn: '1h',
     });
     // 리프레시 토큰 조회
@@ -85,7 +87,7 @@ export class AuthService {
 
     // 리프레시 토큰 생성
     const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.REFRESH_TOKEN_SECRET_KEY,
+      secret: this.configService.get<string>('REFRESH_TOKEN_SECRET_KEY'),
       expiresIn: '7d',
     });
     // 레디스에 엑세스, 리프레시 토큰에 저장
