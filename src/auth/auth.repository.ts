@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from 'src/users/interfaces/user-email.interface';
+import { User } from 'src/users/interfaces/user.interface';
 
 @Injectable()
 export class AuthRepository {
@@ -18,6 +18,7 @@ export class AuthRepository {
         email: true,
         password: true,
         name: true,
+        role: true,
       },
     });
     return user;

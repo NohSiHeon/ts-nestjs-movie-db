@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from './interfaces/user-email.interface';
+import { User } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findUserEmailByEmail(email: string): Promise<User | null> {
-    const userEmail = await this.prisma.user.findUnique({
+  async findUserInfoByEmail(email: string): Promise<Omit<User, 'role'> | null> {
+    const userInfo = await this.prisma.user.findUnique({
       where: {
         email,
       },
@@ -19,13 +19,13 @@ export class UsersRepository {
       },
     });
 
-    return userEmail;
+    return userInfo;
   }
 
   async findUserByIdAndEmail(
     id: number,
     email: string,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<User, 'password'> | null> {
     const user = await this.prisma.user.findUnique({
       where: {
         id,
@@ -35,6 +35,7 @@ export class UsersRepository {
         id: true,
         email: true,
         name: true,
+        role: true,
       },
     });
 
