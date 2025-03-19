@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  GENERAL
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(GENERAL)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  Review    Review[]
+  Movie     Movie[]
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  movieId   Int      @map("movie_id")
+  score     Score    @default(THREE)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  movie Movie @relation(fields: [movieId], references: [id])
+}
+
+enum Score {
+  ONE
+  TWO
+  THREE
+  FOUR
+  FIVE
+}
+
+model Movie {
+  id           Int        @id @default(autoincrement())
+  userId       Int        @map("user_id")
+  title        String
+  introduction String
+  actors       String
+  rating       Float
+  genre        MovieGenre @default(NONE)
+  releaseYear  String     @map("release_year")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  Review       Review[]
+  user         User       @relation(fields: [userId], references: [id])
+}
+
+enum MovieGenre {
+  NONE
+  ACTION
+  ADVENTURE
+  COMEDY
+  FANTASY
+  HORROR
+  SF
+  SPORTS
+  ANIMATION
+  MYSTERY
+  CRIME
+}

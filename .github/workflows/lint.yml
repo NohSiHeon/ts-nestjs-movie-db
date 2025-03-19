@@ -1,0 +1,29 @@
+name: Lint and Format Check
+
+on:
+  push:
+    branches:
+      - main # main 브랜치로 push될 때 CI가 실행되도록 설정
+  pull_request:
+    branches:
+      - main # main 브랜치로 PR이 생성될 때 CI가 실행되도록 설정
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.13.1' # 노드 버전을 20.13.1로 설정
+
+      - name: Install dependencies
+        run: |
+          yarn install
+
+      - name: Run Prettier
+        run: |
+          yarn format --check  # 포맷팅이 제대로 되었는지 확인
