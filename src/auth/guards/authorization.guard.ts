@@ -3,24 +3,33 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { User } from 'src/users/interfaces/user.interface';
+import { Request } from 'express';
+import { UserRole } from 'src/users/enums/user-role.enum';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
-    console.log('user@@', user);
+    const role = this.reflector.get<UserRole[]>('roles', context.getHandler());
 
-    return this.validateUser(user);
+    if (!role) return true;
+
+    const request = context.switchToHttp().getRequest<Request>();
+    const user = request.user;
+
+    if (!user) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+
+    return this.validateUser(user, role);
   }
 
-  private async validateUser(user: Omit<User, 'password'>): Promise<boolean> {
-    if (!user && user.role !== 'ADMIN') {
+  private async validateUser(user: any, role: UserRole[]): Promise<boolean> {
+    if (!role.includes(user.role)) {
       throw new UnauthorizedException('접근할 권한이 없습니다.');
     }
     return true;
