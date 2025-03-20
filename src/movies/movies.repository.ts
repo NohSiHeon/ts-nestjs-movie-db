@@ -36,4 +36,10 @@ export class MoviesRepository {
     });
     return movie;
   }
+
+  async getMovies(): Promise<Movie[]> {
+    const movies = await this.prisma.movie.findMany({});
+
+    return movies;
+  }
 }

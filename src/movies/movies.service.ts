@@ -33,4 +33,14 @@ export class MoviesService {
     }
     return movie;
   }
+
+  async getMovies(): Promise<Movie[]> {
+    const movies = await this.moviesRepository.getMovies();
+
+    if (!movies) {
+      throw new NotFoundException('존재하지않거나 삭제된 영화입니다.');
+    }
+
+    return movies;
+  }
 }
