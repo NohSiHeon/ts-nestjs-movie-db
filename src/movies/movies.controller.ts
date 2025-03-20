@@ -17,6 +17,7 @@ import { UserRole } from 'src/users/enums/user-role.enum';
 import { User } from 'src/users/decorators/user.decorator';
 import { Payload } from 'src/auth/interfaces/payload.interface';
 import { GetMovieResponse } from './interfaces/get-movie-response.interface';
+import { GetMoviesResponse } from './interfaces/get-movies-response.interface';
 
 @Controller('movies')
 export class MoviesController {
@@ -46,6 +47,17 @@ export class MoviesController {
     return {
       status: HttpStatus.OK,
       message: '영화 조회 성공',
+      data,
+    };
+  }
+
+  @Get()
+  async getMovies(): Promise<GetMoviesResponse> {
+    const data = await this.moviesService.getMovies();
+
+    return {
+      status: HttpStatus.OK,
+      message: '영화 목록 조회 성공',
       data,
     };
   }
