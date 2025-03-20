@@ -56,7 +56,7 @@ model Movie {
   title        String
   introduction String
   actors       String
-  rating       Float
+  rating       Float      @default(0)
   genre        MovieGenre @default(NONE)
   releaseYear  String     @map("release_year")
   createdAt    DateTime   @default(now()) @map("created_at")
