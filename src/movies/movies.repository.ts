@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MovieGenre } from '@prisma/client';
+import { Movie } from './interfaces/movie.interface';
 
 @Injectable()
 export class MoviesRepository {
@@ -25,5 +26,14 @@ export class MoviesRepository {
       },
     });
     return data;
+  }
+
+  async getMovie(id: number): Promise<Movie> {
+    const movie = await this.prisma.movie.findUnique({
+      where: {
+        id,
+      },
+    });
+    return movie;
   }
 }
