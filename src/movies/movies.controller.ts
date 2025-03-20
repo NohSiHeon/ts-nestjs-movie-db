@@ -1,13 +1,22 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { RegisterMovieDto } from './dtos/register-movie.dto';
-import { RegisterMovieResponse } from './interfaces/register-movie.interface';
+import { RegisterMovieResponse } from './interfaces/register-movie-response.interface';
 import { AuthenticationGuard } from 'src/auth/guards/authentication.guard';
 import { AuthorizationGuard } from 'src/auth/guards/authorization.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { UserRole } from 'src/users/enums/user-role.enum';
 import { User } from 'src/users/decorators/user.decorator';
 import { Payload } from 'src/auth/interfaces/payload.interface';
+import { GetMovieResponse } from './interfaces/get-movie-response.interface';
 
 @Controller('movies')
 export class MoviesController {
@@ -25,7 +34,18 @@ export class MoviesController {
 
     return {
       status: HttpStatus.CREATED,
-      message: '영화등록 성공',
+      message: '영화 등록 성공',
+      data,
+    };
+  }
+
+  @Get(':id')
+  async getMovie(@Param('id') id: number): Promise<GetMovieResponse> {
+    const data = await this.moviesService.getMovie(+id);
+
+    return {
+      status: HttpStatus.OK,
+      message: '영화 조회 성공',
       data,
     };
   }
