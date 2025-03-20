@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { MovieGenre } from '@prisma/client';
+import { Movie } from './interfaces/movie.interface';
 
 @Injectable()
 export class MoviesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  // async registerMovie(
-  //   title: string,
-  //   introduction: string,
-  //   actors: string,
-  //   genre,
-  //   releaseYear: string,
-  // ) {
-  //   const data = await this.prisma.movie.create({
-  //     data: {
-  //       title,
-  //       introduction,
-  //       actors,
-  //       genre,
-  //       releaseYear,
-  //     },
-  //   });
-  //   return data;
-  // }
+  async registerMovie(
+    userId: number,
+    title: string,
+    introduction: string,
+    actors: string,
+    genre: MovieGenre,
+    releaseYear: string,
+  ) {
+    const data = await this.prisma.movie.create({
+      data: {
+        userId,
+        title,
+        introduction,
+        actors,
+        genre,
+        releaseYear,
+      },
+    });
+    return data;
+  }
+
+  async getMovie(id: number): Promise<Movie> {
+    const movie = await this.prisma.movie.findUnique({
+      where: {
+        id,
+      },
+    });
+    return movie;
+  }
 }
