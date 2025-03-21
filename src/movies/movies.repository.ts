@@ -28,7 +28,7 @@ export class MoviesRepository {
     return data;
   }
 
-  async getMovie(id: number): Promise<Movie> {
+  async findMovieById(id: number): Promise<Movie> {
     const movie = await this.prisma.movie.findUnique({
       where: {
         id,
@@ -37,9 +37,31 @@ export class MoviesRepository {
     return movie;
   }
 
-  async getMovies(): Promise<Movie[]> {
+  async findMovieByIdAndUserId(id: number, userId: number): Promise<Movie> {
+    const movie = await this.prisma.movie.findUnique({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    return movie;
+  }
+
+  async findMovies(): Promise<Movie[]> {
     const movies = await this.prisma.movie.findMany({});
 
     return movies;
+  }
+
+  async deleteMovie(id: number, userId: number): Promise<Movie> {
+    const movie = await this.prisma.movie.delete({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    return movie;
   }
 }

@@ -26,7 +26,7 @@ export class MoviesService {
   }
 
   async getMovie(id: number): Promise<Movie> {
-    const movie = await this.moviesRepository.getMovie(id);
+    const movie = await this.moviesRepository.findMovieById(id);
 
     if (!movie) {
       throw new NotFoundException('존재하지않거나 삭제된 영화입니다.');
@@ -35,12 +35,27 @@ export class MoviesService {
   }
 
   async getMovies(): Promise<Movie[]> {
-    const movies = await this.moviesRepository.getMovies();
+    const movies = await this.moviesRepository.findMovies();
 
     if (!movies) {
       throw new NotFoundException('존재하지않거나 삭제된 영화입니다.');
     }
 
     return movies;
+  }
+
+  async deleteMovie(id: number, userId: number): Promise<Movie> {
+    const existedMovie = await this.moviesRepository.findMovieByIdAndUserId(
+      id,
+      userId,
+    );
+
+    if (!existedMovie) {
+      throw new NotFoundException('존재하지않거나 삭제된 영화입니다.');
+    }
+
+    const movie = await this.moviesRepository.deleteMovie(id, userId);
+
+    return movie;
   }
 }
