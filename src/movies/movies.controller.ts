@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -18,6 +19,7 @@ import { User } from 'src/users/decorators/user.decorator';
 import { Payload } from 'src/auth/interfaces/payload.interface';
 import { GetMovieResponse } from './interfaces/get-movie-response.interface';
 import { GetMoviesResponse } from './interfaces/get-movies-response.interface';
+import { DeleteMovieResponse } from './interfaces/delete-movie-response.interface';
 
 @Controller('movies')
 export class MoviesController {
@@ -58,6 +60,24 @@ export class MoviesController {
     return {
       status: HttpStatus.OK,
       message: '영화 목록 조회 성공',
+      data,
+    };
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
+  @Delete('/:id')
+  async deleteMovie(
+    @Param('id') id: number,
+    @User() userInfo: Payload,
+  ): Promise<DeleteMovieResponse> {
+    const userId = userInfo.id;
+
+    const data = await this.moviesService.deleteMovie(+id, userId);
+
+    return {
+      status: HttpStatus.OK,
+      message: '영화 삭제 성공',
       data,
     };
   }
