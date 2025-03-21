@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { MoviesRepository } from './movies.repository';
 import { RegisterMovieDto } from './dtos/register-movie.dto';
 import { Movie } from './interfaces/movie.interface';
+import { UpdateMovieDto } from './dtos/update-movie.dto';
 
 @Injectable()
 export class MoviesService {
@@ -55,6 +56,35 @@ export class MoviesService {
     }
 
     const movie = await this.moviesRepository.deleteMovie(id, userId);
+
+    return movie;
+  }
+
+  async updateMovie(
+    id: number,
+    userId: number,
+    updateMovieDto: UpdateMovieDto,
+  ) {
+    const existedMovie = await this.moviesRepository.findMovieByIdAndUserId(
+      id,
+      userId,
+    );
+
+    if (!existedMovie) {
+      throw new NotFoundException('존재하지않거나 삭제된 영화입니다.');
+    }
+
+    const { title, introduction, actors, genre, releaseYear } = updateMovieDto;
+
+    const movie = await this.moviesRepository.updateMovie(
+      id,
+      userId,
+      title,
+      introduction,
+      actors,
+      genre,
+      releaseYear,
+    );
 
     return movie;
   }
