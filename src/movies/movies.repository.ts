@@ -64,4 +64,30 @@ export class MoviesRepository {
 
     return movie;
   }
+
+  async updateMovie(
+    id: number,
+    userId: number,
+    title: string,
+    introduction: string,
+    actors: string,
+    genre,
+    releaseYear: string,
+  ) {
+    const movie = await this.prisma.movie.update({
+      where: {
+        id,
+        userId,
+      },
+      data: {
+        ...(title && { title }),
+        ...(introduction && { introduction }),
+        ...(actors && { actors }),
+        ...(genre && { genre }),
+        ...(releaseYear && { releaseYear }),
+      },
+    });
+
+    return movie;
+  }
 }

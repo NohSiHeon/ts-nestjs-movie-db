@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +21,8 @@ import { Payload } from 'src/auth/interfaces/payload.interface';
 import { GetMovieResponse } from './interfaces/get-movie-response.interface';
 import { GetMoviesResponse } from './interfaces/get-movies-response.interface';
 import { DeleteMovieResponse } from './interfaces/delete-movie-response.interface';
+import { UpdateMovieDto } from './dtos/update-movie.dto';
+import { UpdateMovieResponse } from './interfaces/update-movie-response.interface';
 
 @Controller('movies')
 export class MoviesController {
@@ -78,6 +81,29 @@ export class MoviesController {
     return {
       status: HttpStatus.OK,
       message: '영화 삭제 성공',
+      data,
+    };
+  }
+
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
+  @Patch('/:id')
+  async updateMovie(
+    @Param('id') id: number,
+    @Body() updateMovieDto: UpdateMovieDto,
+    @User() userInfo: Payload,
+  ): Promise<UpdateMovieResponse> {
+    const userId = userInfo.id;
+
+    const data = await this.moviesService.updateMovie(
+      +id,
+      userId,
+      updateMovieDto,
+    );
+
+    return {
+      status: HttpStatus.OK,
+      message: '영화 수정 성공',
       data,
     };
   }
