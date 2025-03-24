@@ -56,8 +56,13 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll() {
-    return this.reviewsService.findAll();
+  async getReviews() {
+    const data = await this.reviewsService.getReviews();
+    return {
+      status: HttpStatus.OK,
+      message: '리뷰 목록 조회 성공',
+      data,
+    };
   }
 
   @Patch(':id')
