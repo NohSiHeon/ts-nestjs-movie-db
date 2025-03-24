@@ -49,12 +49,15 @@ export class ReviewsService {
     return registeredReview;
   }
 
+  async getReview(id: number): Promise<Review> {
+    const review = await this.reviewsRepository.findReviewById(id);
+    if (!review) {
+      throw new NotFoundException('존재하지 않거나 삭제된 리뷰입니다.');
+    }
+    return review;
+  }
   async findAll() {
     return `This action returns all reviews`;
-  }
-
-  async findOne(id: number) {
-    return `This action returns a #${id} review`;
   }
 
   async update(id: number, updateReviewDto: UpdateReviewDto) {

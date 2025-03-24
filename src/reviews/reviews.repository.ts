@@ -60,4 +60,14 @@ export class ReviewsRepository {
 
     return review;
   }
+
+  async findReviewById(id: number): Promise<Review> {
+    const review = await this.prisma.review.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return review;
+  }
 }

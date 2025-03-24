@@ -16,6 +16,7 @@ import { AuthenticationGuard } from 'src/auth/guards/authentication.guard';
 import { User } from 'src/users/decorators/user.decorator';
 import { Payload } from 'src/auth/interfaces/payload.interface';
 import { RegisterReviewResponse } from './interfaces/register-review-response.interface';
+import { GetReviewResponse } from './interfaces/get-review-response.interface';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -43,14 +44,20 @@ export class ReviewsController {
     };
   }
 
+  @Get(':id')
+  async getReview(@Param('id') id: number): Promise<GetReviewResponse> {
+    const data = await this.reviewsService.getReview(+id);
+
+    return {
+      status: HttpStatus.OK,
+      message: '리뷰 조회 성공',
+      data,
+    };
+  }
+
   @Get()
   findAll() {
     return this.reviewsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewsService.findOne(+id);
   }
 
   @Patch(':id')
