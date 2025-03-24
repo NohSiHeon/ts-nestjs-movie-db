@@ -7,6 +7,7 @@ export interface Movie {
   introduction: string;
   actors: string;
   rating: number;
+  reviewCount: number;
   genre: MovieGenre;
   releaseYear: string;
   createdAt: Date;

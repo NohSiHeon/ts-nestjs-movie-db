@@ -35,11 +35,14 @@ model Review {
   userId    Int      @map("user_id")
   movieId   Int      @map("movie_id")
   score     Score    @default(THREE)
+  text      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   user  User  @relation(fields: [userId], references: [id])
   movie Movie @relation(fields: [movieId], references: [id])
+
+  @@unique([userId, movieId])
 }
 
 enum Score {
@@ -57,6 +60,7 @@ model Movie {
   introduction String
   actors       String
   rating       Float      @default(0)
+  reviewCount  Int        @default(0)
   genre        MovieGenre @default(NONE)
   releaseYear  String     @map("release_year")
   createdAt    DateTime   @default(now()) @map("created_at")
