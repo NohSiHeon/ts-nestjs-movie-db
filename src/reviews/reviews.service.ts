@@ -56,8 +56,9 @@ export class ReviewsService {
     }
     return review;
   }
-  async findAll() {
-    return `This action returns all reviews`;
+  async getReviews(): Promise<Review[]> {
+    const reviews = await this.reviewsRepository.findReviews();
+    return reviews;
   }
 
   async update(id: number, updateReviewDto: UpdateReviewDto) {

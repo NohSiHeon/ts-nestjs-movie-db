@@ -70,4 +70,10 @@ export class ReviewsRepository {
 
     return review;
   }
+
+  async findReviews(): Promise<Review[]> {
+    const reviews = await this.prisma.review.findMany({});
+
+    return reviews;
+  }
 }

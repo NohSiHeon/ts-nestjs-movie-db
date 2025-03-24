@@ -17,6 +17,7 @@ import { User } from 'src/users/decorators/user.decorator';
 import { Payload } from 'src/auth/interfaces/payload.interface';
 import { RegisterReviewResponse } from './interfaces/register-review-response.interface';
 import { GetReviewResponse } from './interfaces/get-review-response.interface';
+import { GetReviewsResponse } from './interfaces/get-reviews-response.interface';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -56,8 +57,13 @@ export class ReviewsController {
   }
 
   @Get()
-  findAll() {
-    return this.reviewsService.findAll();
+  async getReviews(): Promise<GetReviewsResponse> {
+    const data = await this.reviewsService.getReviews();
+    return {
+      status: HttpStatus.OK,
+      message: '리뷰 목록 조회 성공',
+      data,
+    };
   }
 
   @Patch(':id')
