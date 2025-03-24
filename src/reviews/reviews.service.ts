@@ -56,7 +56,7 @@ export class ReviewsService {
     }
     return review;
   }
-  async getReviews() {
+  async getReviews(): Promise<Review[]> {
     const reviews = await this.reviewsRepository.findReviews();
     return reviews;
   }
