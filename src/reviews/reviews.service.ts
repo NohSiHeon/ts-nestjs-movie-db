@@ -16,6 +16,7 @@ export class ReviewsService {
     private readonly moviesRepository: MoviesRepository,
     private readonly reviewsRepository: ReviewsRepository,
   ) {}
+  // 리뷰 등록
   async registerReview(
     registerReviewDto: RegisterReviewDto,
     movieId: number,
@@ -47,6 +48,7 @@ export class ReviewsService {
     return registeredReview;
   }
 
+  // 리뷰 상세 조회
   async getReview(id: number): Promise<Review> {
     const review = await this.reviewsRepository.findReviewById(id);
     if (!review) {
@@ -59,10 +61,44 @@ export class ReviewsService {
     return reviews;
   }
 
-  async update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  // 리뷰 수정
+  async updateReview(
+    id: number,
+    userId: number,
+    updateReviewDto: UpdateReviewDto,
+  ): Promise<Review> {
+    const review = await this.reviewsRepository.findReviewByIdAndUserId(
+      id,
+      userId,
+    );
+    if (!review) {
+      throw new NotFoundException('존재하지 않거나 삭제된 리뷰입니다.');
+    }
+
+    const { score, text } = updateReviewDto;
+    // 기존 리뷰 평점
+    const existedScore = Score[review.score];
+
+    // 수정할 리뷰 평점
+    const updateScore = Score[score];
+
+    // 새로운 리뷰에 맞게 영화 평점 계산
+    const newRating =
+      (review.movie.rating * review.movie.reviewCount -
+        existedScore +
+        updateScore) /
+      review.movie.reviewCount;
+    return await this.reviewsRepository.updateReview(
+      id,
+      userId,
+      review.movieId,
+      score,
+      newRating,
+      text,
+    );
   }
 
+  // 리뷰 삭제
   async deleteReview(id: number, userId: number): Promise<Review> {
     const existedReview = await this.reviewsRepository.findReviewByIdAndUserId(
       id,

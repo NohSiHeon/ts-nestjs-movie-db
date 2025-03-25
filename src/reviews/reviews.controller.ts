@@ -19,6 +19,7 @@ import { RegisterReviewResponse } from './interfaces/register-review-response.in
 import { GetReviewResponse } from './interfaces/get-review-response.interface';
 import { GetReviewsResponse } from './interfaces/get-reviews-response.interface';
 import { DeleteReviewResponse } from './interfaces/delete-review-response.interface';
+import { UpdateReviewResponse } from './interfaces/update-review-response.interface';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -67,9 +68,24 @@ export class ReviewsController {
     };
   }
 
+  @UseGuards(AuthenticationGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
-    return this.reviewsService.update(+id, updateReviewDto);
+  async updateReview(
+    @Param('id') id: string,
+    @Body() updateReviewDto: UpdateReviewDto,
+    @User() userInfo: Payload,
+  ): Promise<UpdateReviewResponse> {
+    const userId = userInfo.id;
+    const data = await this.reviewsService.updateReview(
+      +id,
+      userId,
+      updateReviewDto,
+    );
+    return {
+      status: HttpStatus.OK,
+      message: '리뷰 수정 성공',
+      data,
+    };
   }
 
   @UseGuards(AuthenticationGuard)

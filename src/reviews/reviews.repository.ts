@@ -16,6 +16,7 @@ export class ReviewsRepository {
     private readonly moviesRepository: MoviesRepository,
   ) {}
 
+  // userId와 movieId로 리뷰 조회
   async findReviewByUserIdAndMovieId(userId: number, movieId: number) {
     const review = await this.prisma.review.findUnique({
       where: {
@@ -82,14 +83,14 @@ export class ReviewsRepository {
     return review;
   }
 
-  // 모든 리뷰 조회
+  // 리뷰 목록 조회
   async findReviews(): Promise<Review[]> {
     const reviews = await this.prisma.review.findMany({});
 
     return reviews;
   }
 
-  // id와 userId로 리뷰 조회
+  // id와 userId로 리뷰와 리뷰에대한 영화 조회
   async findReviewByIdAndUserId(id: number, userId: number) {
     const review = await this.prisma.review.findUnique({
       where: {
@@ -144,5 +145,37 @@ export class ReviewsRepository {
     });
 
     return deletedReview;
+  }
+
+  async updateReview(
+    id: number,
+    userId: number,
+    movieId: number,
+    score: Score,
+    newRating: number,
+    text: string,
+  ): Promise<Review> {
+    // 트랜잭션
+    const updatedReview = await this.prisma.$transaction(async (tx) => {
+      // 리뷰 수정
+      const review = await tx.review.update({
+        where: {
+          id,
+          userId,
+        },
+        data: {
+          ...(score && { score }),
+          ...(text && { text }),
+        },
+      });
+
+      // 수정할 평점이 있을 경우
+      if (score) {
+        await this.moviesRepository.updateRating(tx, movieId, newRating);
+      }
+      return review;
+    });
+
+    return updatedReview;
   }
 }

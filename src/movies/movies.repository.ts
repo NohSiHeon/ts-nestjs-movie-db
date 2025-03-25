@@ -122,4 +122,19 @@ export class MoviesRepository {
       },
     });
   }
+
+  async updateRating(
+    tx: Prisma.TransactionClient,
+    movieId: number,
+    newRating: number,
+  ) {
+    await tx.movie.update({
+      where: {
+        id: movieId,
+      },
+      data: {
+        rating: newRating,
+      },
+    });
+  }
 }
