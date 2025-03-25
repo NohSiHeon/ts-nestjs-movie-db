@@ -91,7 +91,7 @@ export class MoviesRepository {
     return movie;
   }
 
-  async updateRating(
+  async updateRatingAndIncrementReviewCount(
     tx: Prisma.TransactionClient,
     movieId: number,
     movieRating: number,
@@ -103,6 +103,22 @@ export class MoviesRepository {
       data: {
         rating: movieRating,
         reviewCount: { increment: 1 },
+      },
+    });
+  }
+
+  async updateRatingAndDecrementReviewCount(
+    tx: Prisma.TransactionClient,
+    movieId: number,
+    movieRating: number,
+  ) {
+    await tx.movie.update({
+      where: {
+        id: movieId,
+      },
+      data: {
+        rating: movieRating,
+        reviewCount: { decrement: 1 },
       },
     });
   }
