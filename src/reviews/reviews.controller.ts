@@ -18,6 +18,7 @@ import { Payload } from 'src/auth/interfaces/payload.interface';
 import { RegisterReviewResponse } from './interfaces/register-review-response.interface';
 import { GetReviewResponse } from './interfaces/get-review-response.interface';
 import { GetReviewsResponse } from './interfaces/get-reviews-response.interface';
+import { DeleteReviewResponse } from './interfaces/delete-review-response.interface';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -71,8 +72,19 @@ export class ReviewsController {
     return this.reviewsService.update(+id, updateReviewDto);
   }
 
+  @UseGuards(AuthenticationGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reviewsService.remove(+id);
+  async deleteReview(
+    @Param('id') id: number,
+    @User() userInfo: Payload,
+  ): Promise<DeleteReviewResponse> {
+    const userId = userInfo.id;
+
+    const data = await this.reviewsService.deleteReview(+id, userId);
+    return {
+      status: HttpStatus.OK,
+      message: '리뷰 삭제 성공',
+      data,
+    };
   }
 }

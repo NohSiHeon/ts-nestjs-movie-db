@@ -1,6 +1,4 @@
 import {
-  BadRequestException,
-  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -65,7 +63,34 @@ export class ReviewsService {
     return `This action updates a #${id} review`;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} review`;
+  async deleteReview(id: number, userId: number): Promise<Review> {
+    const existedReview = await this.reviewsRepository.findReviewByIdAndUserId(
+      id,
+      userId,
+    );
+
+    if (!existedReview) {
+      throw new NotFoundException('존재하지 않거나 삭제된 리뷰입니다.');
+    }
+
+    // 영화 id
+    const movieId = existedReview.movieId;
+
+    // 리뷰 점수 숫자로 변환
+    const score = Score[existedReview.score];
+
+    // 새로 업데이트 될 영화 평점 계산
+    const newRating =
+      (existedReview.movie.rating * existedReview.movie.reviewCount - score) /
+      (existedReview.movie.reviewCount - 1);
+
+    const deletedReview = await this.reviewsRepository.deleteReview(
+      id,
+      userId,
+      movieId,
+      newRating,
+    );
+
+    return deletedReview;
   }
 }
