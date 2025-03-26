@@ -137,4 +137,19 @@ export class MoviesRepository {
       },
     });
   }
+
+  async searchMovies(field: string, value: string) {
+    const movies = await this.prisma.movie.findMany({
+      where: {
+        [field]: {
+          search: value,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return movies;
+  }
 }

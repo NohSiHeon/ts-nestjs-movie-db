@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { MoviesService } from './movies.service';
@@ -41,6 +42,20 @@ export class MoviesController {
     return {
       status: HttpStatus.CREATED,
       message: '영화 등록 성공',
+      data,
+    };
+  }
+
+  @Get('/search')
+  async searchMovies(
+    @Query('field') field: 'title' | 'actors',
+    @Query('value') value: string,
+  ) {
+    const data = await this.moviesService.searchMovies(field, value);
+
+    return {
+      status: HttpStatus.OK,
+      message: '영화 검색 성공',
       data,
     };
   }
