@@ -88,4 +88,10 @@ export class MoviesService {
 
     return movie;
   }
+
+  async searchMovies(field: string, value: string) {
+    const movies = await this.moviesRepository.searchMovies(field, value);
+
+    return movies;
+  }
 }

@@ -67,6 +67,10 @@ model Movie {
   updatedAt    DateTime   @updatedAt @map("updated_at")
   Review       Review[]
   user         User       @relation(fields: [userId], references: [id])
+
+  @@fulltext([title]) // title 컬럼에 대한 FULLTEXT 인덱스 생성
+  @@fulltext([actors]) // actors 컬럼에 대한 FULLTEXT 인덱스 생성
+  @@fulltext([rating]) // rating 컬럼에 대한 FULLTEXT 인덱스 생성
 }
 
 enum MovieGenre {
