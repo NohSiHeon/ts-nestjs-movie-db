@@ -39,7 +39,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(
       password,
-      +this.configService.get<number>('HASH_ROUNDS'),
+      +this.configService.get<string>('HASH_ROUNDS'),
     );
     const data = await this.authRepository.signUp(name, email, hashedPassword);
 
