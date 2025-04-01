@@ -7,6 +7,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReviewsModule } from './reviews/reviews.module';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     PrismaModule,
     ReviewsModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    SeederModule,
   ],
   controllers: [],
   providers: [PrismaService],
