@@ -7,8 +7,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { RedisModule } from 'src/redis/redis.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthenticationGuard } from './guards/authentication.guard';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 
 @Module({
   imports: [
@@ -23,8 +24,9 @@ import { LocalStrategy } from './strategies/local.strategy';
     AuthRepository,
     AuthenticationGuard,
     JwtService,
-    JwtStrategy,
+    AccessTokenStrategy,
     LocalStrategy,
+    RefreshTokenStrategy,
   ],
   exports: [AuthenticationGuard, JwtService, AuthRepository],
 })
