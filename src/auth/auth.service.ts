@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -90,5 +91,18 @@ export class AuthService {
     }
 
     return userInfo;
+  }
+
+  async signOut(id: number): Promise<boolean> {
+    const refreshToken = await this.redisService.getRefreshToken(id);
+
+    if (!refreshToken) {
+      throw new NotFoundException(
+        '이미 로그아웃 처리되었거나, 로그아웃할 세션을 찾을 수 없습니다.',
+      );
+    }
+
+    await this.redisService.deleteRefreshToken(id);
+    return true;
   }
 }

@@ -12,6 +12,10 @@ import { SignUpSuccessResponse } from './interfaces/sign-up-success-response.int
 import { SignUpFailResponse } from './interfaces/sign-up-fail-response.interface';
 import { SignInSuccessResponse } from './interfaces/sign-in-success-response.interface';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/users/decorators/user.decorator';
+import { Payload } from './interfaces/payload.interface';
+import { SignOutSuccessResponse } from './interfaces/sign-out-success-reponse.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -41,6 +45,19 @@ export class AuthController {
     return {
       status: HttpStatus.OK,
       message: '로그인에 성공했습니다.',
+      data,
+    };
+  }
+
+  @UseGuards(AuthGuard('refresh'))
+  @Post('sign-out')
+  async signOut(@User() userInfo: Payload): Promise<SignOutSuccessResponse> {
+    const { id } = userInfo;
+    const data = await this.authService.signOut(id);
+
+    return {
+      status: HttpStatus.OK,
+      message: '로그아웃에 성공했습니다.',
       data,
     };
   }

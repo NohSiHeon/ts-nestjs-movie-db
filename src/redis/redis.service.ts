@@ -33,4 +33,9 @@ export class RedisService implements OnModuleInit {
   async getRefreshToken(userId: number): Promise<string> {
     return await this.redisClient.get(`refreshToken:${userId}`);
   }
+
+  // 리프레시 토큰 삭제
+  async deleteRefreshToken(userId: number) {
+    return await this.redisClient.del(`refreshToken:${userId}`);
+  }
 }
