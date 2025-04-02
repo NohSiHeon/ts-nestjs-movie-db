@@ -19,10 +19,9 @@ export class ReviewsService {
   // 리뷰 등록
   async registerReview(
     registerReviewDto: RegisterReviewDto,
-    movieId: number,
     requestUserId: number,
   ): Promise<Review> {
-    const { score, text } = registerReviewDto;
+    const { movieId, score, text } = registerReviewDto;
     const scoreNumber = Score[score];
 
     const movie = await this.moviesRepository.findMovieById(movieId);
