@@ -1,7 +1,10 @@
 import { Score } from '@prisma/client';
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 
 export class RegisterReviewDto {
+  @IsNumber()
+  movieId: number;
+
   @IsString()
   text: string;
 

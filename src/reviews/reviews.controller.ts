@@ -26,17 +26,15 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @UseGuards(AuthenticationGuard)
-  @Post('/:id')
+  @Post('/')
   async registerReview(
     @Body() registerReviewDto: RegisterReviewDto,
-    @Param('id') movieId: number,
     @User() userInfo: Payload,
   ): Promise<RegisterReviewResponse> {
     const userId = userInfo.id;
 
     const data = await this.reviewsService.registerReview(
       registerReviewDto,
-      +movieId,
       userId,
     );
 
