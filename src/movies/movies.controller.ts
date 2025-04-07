@@ -24,6 +24,7 @@ import { GetMoviesResponse } from './interfaces/get-movies-response.interface';
 import { DeleteMovieResponse } from './interfaces/delete-movie-response.interface';
 import { UpdateMovieDto } from './dtos/update-movie.dto';
 import { UpdateMovieResponse } from './interfaces/update-movie-response.interface';
+import { Movie } from './interfaces/movie.interface';
 
 @Controller('movies')
 export class MoviesController {
@@ -72,8 +73,18 @@ export class MoviesController {
   }
 
   @Get()
-  async getMovies(): Promise<GetMoviesResponse> {
-    const data = await this.moviesService.getMovies();
+  async getMovies(
+    @Query('cursor') cursor: number,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('sort') sort: string,
+  ): Promise<GetMoviesResponse> {
+    const data = await this.moviesService.getMovies(
+      +cursor,
+      +page,
+      +limit,
+      sort,
+    );
 
     return {
       status: HttpStatus.OK,

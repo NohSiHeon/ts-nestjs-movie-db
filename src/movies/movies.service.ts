@@ -35,8 +35,31 @@ export class MoviesService {
     return movie;
   }
 
-  async getMovies(): Promise<Movie[]> {
-    const movies = await this.moviesRepository.findMovies();
+  async getMovies(
+    cursor: number,
+    page: number,
+    limit: number,
+    sort: string,
+  ): Promise<Movie[]> {
+    if (!sort) {
+      sort = 'desc';
+    }
+    let movies: Movie[];
+    console.log(cursor);
+    console.log(sort);
+    if (cursor) {
+      movies = await this.moviesRepository.findMoviesWithCursor(
+        cursor,
+        limit,
+        sort,
+      );
+    } else if (page) {
+      movies = await this.moviesRepository.findMoviesWithOffSet(
+        page,
+        limit,
+        sort,
+      );
+    }
 
     if (!movies) {
       throw new NotFoundException('존재하지않거나 삭제된 영화입니다.');

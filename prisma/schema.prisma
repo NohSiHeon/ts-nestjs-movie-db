@@ -49,6 +49,8 @@ model Movie {
   user         User       @relation(fields: [userId], references: [id])
   Review       Review[]
 
+  @@index([id])
+  @@index([createdAt])
   @@index([userId], map: "Movie_user_id_fkey")
   @@fulltext([title])
   @@fulltext([actors])
