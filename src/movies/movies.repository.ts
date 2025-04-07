@@ -48,8 +48,31 @@ export class MoviesRepository {
     return movie;
   }
 
-  async findMovies(): Promise<Movie[]> {
-    const movies = await this.prisma.movie.findMany({});
+  async findMoviesWithOffSet(
+    page: number,
+    limit: number,
+    sort: string,
+  ): Promise<Movie[]> {
+    const movies = await this.prisma.movie.findMany({
+      skip: (page - 1) * 5,
+      take: limit,
+      orderBy: { createdAt: sort == 'asc' ? 'asc' : 'desc' },
+    });
+
+    return movies;
+  }
+
+  async findMoviesWithCursor(
+    cursor: number,
+    limit: number,
+    sort: string,
+  ): Promise<Movie[]> {
+    const movies = await this.prisma.movie.findMany({
+      take: limit,
+      skip: cursor ? 1 : 0,
+      orderBy: { createdAt: sort == 'asc' ? 'asc' : 'desc' },
+      cursor: { id: cursor },
+    });
 
     return movies;
   }
