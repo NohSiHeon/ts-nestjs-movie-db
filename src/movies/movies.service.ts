@@ -45,8 +45,7 @@ export class MoviesService {
       sort = 'desc';
     }
     let movies: Movie[];
-    console.log(cursor);
-    console.log(sort);
+
     if (cursor) {
       movies = await this.moviesRepository.findMoviesWithCursor(
         cursor,

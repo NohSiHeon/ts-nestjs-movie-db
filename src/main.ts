@@ -16,6 +16,7 @@ async function bootstrap() {
   await app.listen(process.env.PORT || 3000);
   console.log(`Server is running on port ${process.env.PORT}`);
 
+  // 더미 데이터 넣는 코드
   // const seederService = app.get(SeederService);
   // await seederService.seedUsers();
   // await seederService.seedMovies();
